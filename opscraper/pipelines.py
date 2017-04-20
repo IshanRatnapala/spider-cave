@@ -37,7 +37,7 @@ class OpscraperPipeline(object):
 
     def createTables(self):
         self.cur.execute("CREATE TABLE IF NOT EXISTS Country ( \
-        countryCode1 VARCHAR(2) PRIMARY KEY NOT NULL, \
+        countryCode1 VARCHAR(2) PRIMARY KEY NOT NULL UNIQUE, \
         countryCode2 VARCHAR(3), \
         countryName TEXT, \
         countryCapital TEXT, \
@@ -48,14 +48,15 @@ class OpscraperPipeline(object):
         )")
 
         self.cur.execute("CREATE TABLE IF NOT EXISTS Postcode ( \
-        countryCode1 VARCHAR(2) PRIMARY KEY NOT NULL, \
-        postcode TEXT, \
-        countryName TEXT, \
+        postcode VARCHAR(16) PRIMARY KEY NOT NULL, \
+        countryCode1 VARCHAR(2), \
+        areaname TEXT, \
         address1 TEXT, \
         address2 TEXT, \
         address3 TEXT, \
         latitude TEXT, \
-        longitude TEXT \
+        longitude TEXT, \
+        FOREIGN KEY(countryCode1) REFERENCES Country(countryCode1) \
         )")
 
     def storeInDB(self, item):
@@ -65,8 +66,8 @@ class OpscraperPipeline(object):
     def storeCountryInDB(self, item):
         country = [
             item['country'].get('countryCode1', ''),
-            item['country'].get('countryName', ''),
             item['country'].get('countryCode2', ''),
+            item['country'].get('countryName', ''),
             item['country'].get('countryCapital', ''),
             item['country'].get('countryArea', ''),
             item['country'].get('countryPopulation', ''),
@@ -74,13 +75,13 @@ class OpscraperPipeline(object):
             item['country'].get('postcodeTranslation', '')
         ]
 
-        self.cur.execute("INSERT INTO Country VALUES (?, ?, ?, ?, ?, ?, ?, ? )", country)
+        self.cur.execute("INSERT OR IGNORE INTO Country VALUES (?, ?, ?, ?, ?, ?, ?, ? )", country)
         self.con.commit()
 
     def storePostcodeInDB(self, item):
         postcode = [
-            item['country'].get('countryCode1', ''),
             item['postcode'].get('postcode', ''),
+            item['country'].get('countryCode1', ''),
             item['postcode'].get('areaname', ''),
             item['postcode'].get('address1', ''),
             item['postcode'].get('address2', ''),

@@ -7,17 +7,22 @@ class PostcodesSpider(scrapy.Spider):
     start_urls = ['http://www.datapedia.co/postcodes']
 
     def parse(self, response):
-        for href in response.css('.col-hold a::attr(href)').extract(): #remove first
+        for href in response.css('.col-hold a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href), callback=self.parseCountry)
             return
 
     def parseCountry(self, response):
         countryUrl = response.css('.content-block a::attr(href)').extract_first()
-        yield scrapy.Request(response.urljoin(countryUrl), callback=self.parsePostcodes)
+        yield scrapy.Request(response.urljoin('countryUrl'), callback=self.parsePostcodes)
 
     def parsePostcodes(self, response):
-        postcodeUrl = response.css('.col-hold a::attr(href)').extract_first() #remove first
-        yield scrapy.Request(response.urljoin(postcodeUrl), callback=self.parsePostcode)
+        for postcodeUrl in response.css('.col-hold a::attr(href)').extract():
+            yield scrapy.Request(response.urljoin(postcodeUrl), callback=self.parsePostcode)
+
+        next_page = response.css('li.next a::attr(href)').extract_first()
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parsePostcodes)
 
     def parsePostcode(self, response):
         def getText(row):
