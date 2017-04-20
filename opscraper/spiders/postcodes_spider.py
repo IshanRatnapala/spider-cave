@@ -9,11 +9,10 @@ class PostcodesSpider(scrapy.Spider):
     def parse(self, response):
         for href in response.css('.col-hold a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href), callback=self.parseCountry)
-            return
 
     def parseCountry(self, response):
         countryUrl = response.css('.content-block a::attr(href)').extract_first()
-        yield scrapy.Request(response.urljoin('countryUrl'), callback=self.parsePostcodes)
+        yield scrapy.Request(response.urljoin(countryUrl), callback=self.parsePostcodes)
 
     def parsePostcodes(self, response):
         for postcodeUrl in response.css('.col-hold a::attr(href)').extract():
