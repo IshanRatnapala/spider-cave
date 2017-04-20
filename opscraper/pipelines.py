@@ -48,7 +48,8 @@ class OpscraperPipeline(object):
         )")
 
         self.cur.execute("CREATE TABLE IF NOT EXISTS Postcode ( \
-        postcode VARCHAR(16) PRIMARY KEY NOT NULL, \
+        ID INTEGER PRIMARY KEY, \
+        postcode VARCHAR(16), \
         countryCode1 VARCHAR(2), \
         areaName TEXT, \
         address1 TEXT, \
@@ -75,11 +76,12 @@ class OpscraperPipeline(object):
             item['country'].get('postcodeTranslation', '')
         ]
 
-        self.cur.execute("INSERT OR IGNORE INTO Country VALUES (?, ?, ?, ?, ?, ?, ?, ? )", country)
+        self.cur.execute("INSERT OR IGNORE INTO Country VALUES (?, ?, ?, ?, ?, ?, ?, ?)", country)
         self.con.commit()
 
     def storePostcodeInDB(self, item):
         postcode = [
+            None,
             item['postcode'].get('postcode', ''),
             item['country'].get('countryCode1', ''),
             item['postcode'].get('areaName', ''),
@@ -89,6 +91,6 @@ class OpscraperPipeline(object):
             item['postcode'].get('latitude', ''),
             item['postcode'].get('longitude', '')
         ]
-        self.cur.execute("INSERT INTO Postcode VALUES (?, ?, ?, ?, ?, ?, ?, ? )", postcode)
+        self.cur.execute("INSERT INTO Postcode VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", postcode)
         self.con.commit()
 
