@@ -40,7 +40,7 @@ class PostcodesSpider(scrapy.Spider):
         postcode = Postcode()
         postcode['countryCode1'] = getText(9)
         postcode['postcode'] = getText(1)
-        postcode['areaname'] = getText(2)
+        postcode['areaName'] = getText(2)
         postcode['address1'] = getText(3)
         postcode['address2'] = getText(4)
         postcode['address3'] = getText(5)

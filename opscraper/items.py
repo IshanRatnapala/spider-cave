@@ -22,7 +22,7 @@ class Country(scrapy.Item):
 class Postcode(scrapy.Item):
     countryCode1 = scrapy.Field()
     postcode = scrapy.Field()
-    areaname = scrapy.Field()
+    areaName = scrapy.Field()
     address1 = scrapy.Field()
     address2 = scrapy.Field()
     address3 = scrapy.Field()

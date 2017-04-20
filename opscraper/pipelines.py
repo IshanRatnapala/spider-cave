@@ -50,7 +50,7 @@ class OpscraperPipeline(object):
         self.cur.execute("CREATE TABLE IF NOT EXISTS Postcode ( \
         postcode VARCHAR(16) PRIMARY KEY NOT NULL, \
         countryCode1 VARCHAR(2), \
-        areaname TEXT, \
+        areaName TEXT, \
         address1 TEXT, \
         address2 TEXT, \
         address3 TEXT, \
@@ -82,7 +82,7 @@ class OpscraperPipeline(object):
         postcode = [
             item['postcode'].get('postcode', ''),
             item['country'].get('countryCode1', ''),
-            item['postcode'].get('areaname', ''),
+            item['postcode'].get('areaName', ''),
             item['postcode'].get('address1', ''),
             item['postcode'].get('address2', ''),
             item['postcode'].get('address3', ''),
