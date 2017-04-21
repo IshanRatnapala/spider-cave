@@ -21,7 +21,7 @@ class OpscraperPipeline(object):
         return item
 
     def setupDBCon(self):
-        self.con = sq.connect('test.db')
+        self.con = sq.connect('postcodes.db')
         self.cur = self.con.cursor()
 
     def closeDB(self):
