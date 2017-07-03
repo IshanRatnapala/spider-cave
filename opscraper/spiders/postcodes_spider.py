@@ -5,10 +5,15 @@ from opscraper.items import Country, Postcode
 class PostcodesSpider(scrapy.Spider):
     name = 'postcodes'
     start_urls = ['http://www.datapedia.co/postcodes']
+    shortcutCountryURL = 'http://www.datapedia.co/postcodes/%C3%A5land-postal-zip-codes'
 
     def parse(self, response):
         for href in response.css('.col-hold a::attr(href)').extract():
-            yield scrapy.Request(response.urljoin(href), callback=self.parseCountry)
+            if self.shortcutCountryURL == '':
+                yield scrapy.Request(response.urljoin(href), callback=self.parseCountry)
+            else:
+                yield scrapy.Request(self.shortcutCountryURL, callback=self.parseCountry)
+                return
 
     def parseCountry(self, response):
         countryUrl = response.css('.content-block a::attr(href)').extract_first()
