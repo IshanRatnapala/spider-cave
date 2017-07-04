@@ -5,7 +5,7 @@ from opscraper.items import Country, Postcode
 class PostcodesSpider(scrapy.Spider):
     name = 'postcodes'
     start_urls = ['http://www.datapedia.co/postcodes']
-    shortcutCountryURL = ''
+    shortcutCountryURL = 'http://www.datapedia.co/postcodes/%C3%A5land-postal-zip-codes'
 
     def parse(self, response):
         for href in response.css('.col-hold a::attr(href)').extract():
